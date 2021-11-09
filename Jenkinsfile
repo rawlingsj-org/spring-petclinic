@@ -18,7 +18,7 @@ podTemplate {
       stage('Build image') {
           container('kaniko'){
             sh 'cp /secrets/docker/.dockerconfigjson /kaniko/.docker/config.json'
-            sh '/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination ghcr.io/rawlingsj/petclinic:${version}'
+            sh "/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination ghcr.io/rawlingsj/petclinic:${version}"
           }
       }
 
