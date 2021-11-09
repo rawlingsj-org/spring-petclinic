@@ -3,12 +3,12 @@ entries:
   spring-petclinic:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-11-09T09:52:56.090981335Z"
+    created: "2021-11-09T10:25:30.636863509Z"
     description: A Helm chart for Kubernetes
-    digest: 57d4f57a9533c87dcc46939f38dad7a7a3a2a3060aae6ea9d394145c2be97c8e
+    digest: bb292e1bd91a0e1a88d94fc7abd06d7fefa686a3e1ef61fbe3cf47f22b05b16c
     name: spring-petclinic
     type: application
     urls:
-    - https://rawlingsj.github.io/spring-petclinic/spring-petclinic-4.tgz
-    version: "4"
-generated: "2021-11-09T09:52:56.088976421Z"
+    - https://rawlingsj.github.io/spring-petclinic/spring-petclinic-5.tgz
+    version: "5"
+generated: "2021-11-09T10:25:30.634511952Z"
