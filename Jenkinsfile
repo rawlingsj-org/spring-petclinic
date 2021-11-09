@@ -64,6 +64,25 @@ podTemplate {
             }
           }
         }
+
+        stage('Promote with Argo') {
+
+          container('git'){
+
+            sh 'git clone https://github.com/rawlingsj/demo-argo-applications.git ../argo'
+
+            dir('../argo'){
+              sh 'git config --global credential.helper store'
+              sh 'git config --global user.email "rawlingsj80@gmail.com"'
+              sh 'git config --global user.name "James Rawlings"'
+
+              sh "sed -i -e 's/targetRevision:.*/targetRevision: \"${version}\"/' apps/petclinic-application.yaml"
+
+              sh "git commit -a -m 'chore: promote petclinic v ${version}'"
+              sh 'git push origin main'
+            }
+          }
+        }
       }
 
     }
