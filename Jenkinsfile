@@ -8,9 +8,11 @@ podTemplate {
       
       // should generate a proper release version using git tags, something like https://github.com/jenkins-x-plugins/jx-release-version
       def version = env.BUILD_NUMBER
+      def nextVersion = nextVersion()
 
       stage('Maven build and test') {
           container('maven'){
+            echo "Next version is $nextVersion"
             sh 'mvn clean install'
           }
       }
