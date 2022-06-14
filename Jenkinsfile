@@ -11,7 +11,7 @@ podTemplate {
 
       stage('Maven build and test') {
           container('maven'){
-            sh 'mvn clean install'
+            sh 'mvn clean install --no-transfer-progress'
           }
       }
 
