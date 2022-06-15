@@ -1,25 +1,27 @@
 #!/bin/env groovy
 
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            label 'maven'
+        }
+    }
     environment {
-        registry = "magalixcorp/k8scicd"
-        GOCACHE = "/tmp"
-	IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
-	VERSION = "$env.BUILD_NUMBER"
-	NEXT_VERSION = nextVersion()
+        IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
+        VERSION = "$env.BUILD_NUMBER"
+        NEXT_VERSION = nextVersion()
     }
     stages {
         stage('Checkout code') {
             steps {
-               	checkout scm
+                checkout scm
             }
         }
 
         stage('Maven build and test') {
             steps {
                 container('maven') {
-            	    sh 'mvn clean install --no-transfer-progress'
+                    sh 'mvn clean install --no-transfer-progress'
                 }
             }
         }
