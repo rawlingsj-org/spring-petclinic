@@ -23,6 +23,7 @@ pipeline {
                     } else {
                         echo "Building Branch"
                     }
+                    echo "$env"
                 }
             }
 	}
