@@ -6,7 +6,7 @@ pipeline {
         registry = "magalixcorp/k8scicd"
         GOCACHE = "/tmp"
 	IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
-	VERSION = env.BUILD_NUMBER
+	VERSION = "$env.BUILD_NUMBER"
     }
     stages {
         stage('Checkout code') {
