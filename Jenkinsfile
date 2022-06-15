@@ -8,6 +8,8 @@ pipeline {
     }
     environment {
         IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
+        USER_EMAIL = "rawlingsj80@gmail.com"
+        USER_NAME = "James Rawlings"
         VERSION = "$env.BUILD_NUMBER"
         //NEXT_VERSION = nextVersion()
     }
@@ -76,8 +78,8 @@ pipeline {
 
                     dir('../helm-repo'){
                         sh 'git config --global credential.helper store'
-                        sh 'git config --global user.email "rawlingsj80@gmail.com"'
-                        sh 'git config --global user.name "James Rawlings"'
+                        sh "git config --global user.email '$env.USER_EMAIL'"
+                        sh "git config --global user.name '$env.USER_NAME'"
 
                         sh 'git add --all'
                         sh "git commit -m 'chore: publish helm chart'"
@@ -97,8 +99,8 @@ pipeline {
                 
                     dir('../argo'){
                         sh 'git config --global credential.helper store'
-                        sh 'git config --global user.email "rawlingsj80@gmail.com"'
-                        sh 'git config --global user.name "James Rawlings"'
+                        sh "git config --global user.email '$env.USER_EMAIL'"
+                        sh "git config --global user.name '$env.USER_NAME'"
 
                         sh "sed -i -e 's/targetRevision:.*/targetRevision: \"${env.VERSION}\"/' apps/petclinic-application.yaml"
 
