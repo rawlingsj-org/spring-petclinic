@@ -10,18 +10,13 @@ pipeline {
         IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
         USER_EMAIL = "rawlingsj80@gmail.com"
         USER_NAME = "James Rawlings"
-        VERSION = "$env.BUILD_NUMBER"
+        VERSION = "${buildingTag() ? $env.TAG_NAME : $env.BUILD_NUMBER}"
     }
     stages {
         stage('Checkout code') {
             steps {
                 checkout scm
-                container('git') {
-                    script {
-                        def next = nextVersion()
-                    }
-                }
-                echo "$next"
+                echo "$env.VERSION"
             }
         }
 
@@ -33,21 +28,21 @@ pipeline {
             }
         }
 
-        stage('Build image') {
-            steps {
-                container('kaniko') {
-                    sh 'cp /secrets/docker/.dockerconfigjson /kaniko/.docker/config.json'
-                    sh "/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination $env.IMAGE_NAME:$env.VERSION"
-                }
-            }
-        }
-
         stage('Helm lint') {
             steps {
                 container('helm'){
                     dir('charts/spring-petclinic'){
                         sh 'helm lint'
                     }
+                }
+            }
+        }
+
+        stage('Build image') {
+            steps {
+                container('kaniko') {
+                    sh 'cp /secrets/docker/.dockerconfigjson /kaniko/.docker/config.json'
+                    sh "/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination $env.IMAGE_NAME:$env.VERSION"
                 }
             }
         }
