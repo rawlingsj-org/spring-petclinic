@@ -7,6 +7,7 @@ pipeline {
         GOCACHE = "/tmp"
 	IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
 	VERSION = "$env.BUILD_NUMBER"
+	NEXT_VERSION = nextVersion()
     }
     stages {
         stage('Checkout code') {
