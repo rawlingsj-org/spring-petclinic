@@ -10,13 +10,26 @@ pipeline {
         IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
         USER_EMAIL = "rawlingsj80@gmail.com"
         USER_NAME = "James Rawlings"
-        VERSION = "${buildingTag() ? $env.TAG_NAME : $env.BUILD_NUMBER}"
+        VERSION = "${env.BUILD_NUMBER}"
     }
     stages {
+        stage('Init') {
+            steps {
+                script {
+                    if (changeRequest()) {
+                        echo "Building PR"
+                    } else if (buildingTag()) {
+                        echo "Building TAG"
+                    } else {
+                        echo "Building Branch"
+                    }
+                }
+            }
+	}
+
         stage('Checkout code') {
             steps {
                 checkout scm
-                echo "$env.VERSION"
             }
         }
 
