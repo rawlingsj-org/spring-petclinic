@@ -11,13 +11,17 @@ pipeline {
         USER_EMAIL = "rawlingsj80@gmail.com"
         USER_NAME = "James Rawlings"
         VERSION = "$env.BUILD_NUMBER"
-        NEXT_VERSION = nextVersion()
     }
     stages {
         stage('Checkout code') {
             steps {
                 checkout scm
-                echo "$env.NEXT_VERSION"
+                container('git') {
+                    script {
+                        def next = nextVersion()
+                    }
+                }
+                echo "$next"
             }
         }
 
