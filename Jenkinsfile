@@ -64,7 +64,7 @@ pipeline {
 
         stage('Helm Package') {
             when {
-                or {
+                anyOf {
                     branch 'main'
                     buildingTag()
                 }
@@ -84,7 +84,7 @@ pipeline {
 
         stage('Helm Publish') {
             when {
-                or {
+                anyOf {
                     branch 'main'
                     buildingTag()
                 }
@@ -112,7 +112,7 @@ pipeline {
 
         stage('Promote with Argo') {
             when {
-                or {
+                anyOf {
                     branch 'main'
                     buildingTag()
                 }
