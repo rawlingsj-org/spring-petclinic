@@ -10,10 +10,25 @@ pipeline {
         IMAGE_NAME = "ghcr.io/rawlingsj/petclinic"
         USER_EMAIL = "rawlingsj80@gmail.com"
         USER_NAME = "James Rawlings"
-        VERSION = "$env.BUILD_NUMBER"
-        //NEXT_VERSION = nextVersion()
     }
     stages {
+        stage('Init') {
+            steps {
+                script {
+                    if (changeRequest()) {
+                        // BRANCH_NAME
+                        env.VERSION = "${env.BRANCH_NAME}"
+                    } else if (buildingTag()) {
+                        // TAG_NAME
+                        env.VERSION = "${env.TAG_NAME}"
+                    } else {
+                        // BRANCH_NAME.BUILD_NUMBER
+                        env.VERSION = "${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+                    }
+                }
+            }
+	}
+
         stage('Checkout code') {
             steps {
                 checkout scm
@@ -28,15 +43,6 @@ pipeline {
             }
         }
 
-        stage('Build image') {
-            steps {
-                container('kaniko') {
-                    sh 'cp /secrets/docker/.dockerconfigjson /kaniko/.docker/config.json'
-                    sh "/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination $env.IMAGE_NAME:$env.VERSION"
-                }
-            }
-        }
-
         stage('Helm lint') {
             steps {
                 container('helm'){
@@ -47,9 +53,21 @@ pipeline {
             }
         }
 
+        stage('Build image') {
+            steps {
+                container('kaniko') {
+                    sh 'cp /secrets/docker/.dockerconfigjson /kaniko/.docker/config.json'
+                    sh "/kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination $env.IMAGE_NAME:$env.VERSION"
+                }
+            }
+        }
+
         stage('Helm Package') {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('helm'){
@@ -66,7 +84,10 @@ pipeline {
 
         stage('Helm Publish') {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('git'){
@@ -91,7 +112,10 @@ pipeline {
 
         stage('Promote with Argo') {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('git'){
