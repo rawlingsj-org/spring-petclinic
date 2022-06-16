@@ -64,7 +64,10 @@ pipeline {
 
         stage('Helm Package') {
             when {
-                branch 'main'
+                or {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('helm'){
@@ -81,7 +84,10 @@ pipeline {
 
         stage('Helm Publish') {
             when {
-                branch 'main'
+                or {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('git'){
@@ -106,7 +112,10 @@ pipeline {
 
         stage('Promote with Argo') {
             when {
-                branch 'main'
+                or {
+                    branch 'main'
+                    buildingTag()
+                }
             }
             steps {
                 container('git'){
